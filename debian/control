@@ -1,0 +1,19 @@
+Source: cutie-panel
+Section: libs
+Maintainer: Cutie Shell Developers <admin@cutie-shell.org>
+Priority: optional
+Build-Depends: pkg-kde-tools,
+               cmake,
+               libgles-dev,
+               qt6-base-dev,
+               pkg-config,
+               qt6-declarative-dev,
+               libqt6dbus6,
+Standards-Version: 4.5.1
+
+Package: cutie-panel
+Architecture: any
+Multi-Arch: foreign
+Pre-Depends: ${misc:Pre-Depends}
+Depends: ${misc:Depends}, ${shlibs:Depends}, qml6-module-cutie
+Description: This package contains the default status bar and quick settings panel for Cutie.

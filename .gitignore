@@ -1,0 +1,14 @@
+*.o
+.qmake.stash
+Makefile
+qrc_*.cpp
+moc_*
+cutie-settings-daemon
+*interface.cpp
+*interface.h
+*adaptor.cpp
+*adaptor.h
+*.so
+_site
+*.lock
+_build
