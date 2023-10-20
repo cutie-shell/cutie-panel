@@ -5,10 +5,13 @@ Priority: optional
 Build-Depends: pkg-kde-tools,
                cmake,
                libgles-dev,
-               qt6-base-dev,
+               qt6-base-dev,               
+               qt6-base-private-dev,
                pkg-config,
                qt6-declarative-dev,
                libqt6dbus6,
+               liblayershellqtinterface6-dev,
+               libudev-dev
 Standards-Version: 4.5.1
 
 Package: cutie-panel
