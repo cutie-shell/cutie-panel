@@ -26,6 +26,7 @@ int main(int argc, char *argv[])
     layerShell->setAnchors(LayerShellQt::Window::AnchorTop);
     layerShell->setKeyboardInteractivity(LayerShellQt::Window::KeyboardInteractivityNone);
     layerShell->setExclusiveZone(30);
+    layerShell->setScope("cutie-panel");
 
     QuickSettings *quicksettings = new QuickSettings(view.engine());
     view.engine()->rootContext()->setContextProperty("quicksettings", quicksettings);
