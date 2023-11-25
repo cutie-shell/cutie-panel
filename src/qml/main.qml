@@ -1,4 +1,5 @@
 import QtQuick
+import Cutie.Wlc
 
 Item {
 	id: settingsState
@@ -69,6 +70,32 @@ Item {
 			}
 		}
 	]
+
+	CutieWlc {
+		id: cutieWlc
+
+		property bool ignoreRelease: false
+		
+		onKey: (key) => {
+			if (ignoreRelease) {
+				ignoreRelease = false;
+				return;
+			}
+
+			if (key == CutieWlc.PowerPress && !outputPowerManager.mode) {
+				outputPowerManager.mode = true;
+				ignoreRelease = true;
+				console.log("on")
+			} else if (key == CutieWlc.PowerRelease && outputPowerManager.mode) {
+				outputPowerManager.mode = false;
+				console.log("off")
+			}
+		}
+	}
+
+	OutputPowerManagerV1 {
+		id: outputPowerManager
+	}
 
 	SettingSheet { id: settingSheet }
 	StatusArea { id: setting }
