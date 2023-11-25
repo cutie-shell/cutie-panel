@@ -264,25 +264,26 @@ Item {
             onReleased: {
                 if (parent.y > parent.height) { 
                     settingsState.state = "opened"
-                    settingSheet.setSettingContainerState("opened");
                 }
                 else { 
                     settingsState.state = "closed"
-                    settingSheet.setSettingContainerState("closed");
                 }
                 parent.y = 0
             }
             
             onPositionChanged: {
                 if (drag.active) {
-                    settingSheet.opacity = 2 * parent.y / Screen.height;
+                    settingSheet.containerOpacity = parent.y / Screen.height;
                     settingSheet.setSettingContainerY(parent.y - Screen.height);
                 }
             }
 
             onPressed: {
                 settingsState.state = "opening";
-                settingSheet.setSettingContainerState("opening");
+                settingSheet.setSettingContainerY(-Screen.height);
+                settingSheet.containerOpacity = 0;
+                settingSheet.y = 0;
+                settingsState.height = Screen.height;
             }
         }
     }

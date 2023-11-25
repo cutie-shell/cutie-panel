@@ -3,13 +3,14 @@ import QtQuick.Controls
 import Qt5Compat.GraphicalEffects
 import Cutie
 
-Rectangle {
+Item {
     id: settingSheet
     width: Screen.width
     height: Screen.height
-    color: Atmosphere.secondaryAlphaColor
-    opacity: 0
     y: -Screen.height
+
+    property alias containerOpacity: settingContainer.opacity
+    property alias containerY: settingContainer.y
 
     CutieStore {
         id: quickStore
@@ -17,8 +18,30 @@ Rectangle {
         storeName: "quicksettings"
     }
 
-    Behavior on opacity {
-        PropertyAnimation { duration: 300 }
+    Image {
+        id: wallpaper
+        anchors.fill: parent
+        source: "file:/" + Atmosphere.path + "/wallpaper.jpg"
+        fillMode: Image.PreserveAspectCrop
+        visible: false
+        z: 1
+    }
+
+    FastBlur {
+        id: wallpaperBlur
+        anchors.fill: wallpaper
+        source: wallpaper
+        radius: 70
+        visible: true
+        opacity: settingSheet.containerOpacity
+        z: 2
+    }
+
+    Rectangle {
+        color: Atmosphere.secondaryAlphaColor
+        anchors.fill: parent
+        opacity: settingSheet.containerOpacity
+        z: 3
     }
 
     property bool isPoweroffPressed: false
@@ -195,10 +218,6 @@ Rectangle {
         settingContainer.y = y;
     }
 
-    function setSettingContainerState(state) {
-        settingContainer.state = state;
-    }
-
     Item {
         id: dragArea
         x: 0
@@ -214,24 +233,21 @@ Rectangle {
 
             onPressed: {
                 settingsState.state = "closing";
-                settingContainer.state = "closing";
             }
 
             onReleased: {
                 if (parent.y < Screen.height - 2 * parent.height) {
                     settingsState.state = "closed"
-                    settingContainer.state = "closed"
                 }
                 else {
                     settingsState.state = "opened"
-                    settingContainer.state = "opened"
                 }
                 parent.y = parent.parent.height - 10
             }
 
             onPositionChanged: {
                 if (drag.active) {
-                    settingSheet.opacity = 1/2 + parent.y / Screen.height / 2
+                    settingContainer.opacity = parent.y / Screen.height;
                     settingContainer.y = parent.y - Screen.height
                 }
             }
@@ -243,25 +259,24 @@ Rectangle {
         y: 0
         height: parent.height
         width: parent.width
+        z: 4
 
-        state: "closed"
+        state: settingsState.state
 
         states: [
             State {
                 name: "opened"
-                PropertyChanges { target: settingContainer; y: 0 }
+                PropertyChanges { target: settingContainer; y: 0; opacity: 1 }
                 PropertyChanges { target: dragArea; y: Screen.height - 10}
                 PropertyChanges { target: settingsState; height: Screen.height }
             },
             State {
                 name: "closed"
-                PropertyChanges { target: settingContainer; y: -Screen.height }
-                PropertyChanges { target: settingsState; height: 30 }
+                PropertyChanges { target: settingContainer; y: -Screen.height; opacity: 0 }
             },
             State {
                 name: "opening"
                 PropertyChanges { target: settingContainer; y: -Screen.height }
-                PropertyChanges { target: settingsState; height: Screen.height }
             },
             State {
                 name: "closing"
@@ -270,9 +285,22 @@ Rectangle {
             }
         ]
 
-        Behavior on y {
-            PropertyAnimation { duration: 300 }
-        }
+        transitions: [
+            Transition {
+                to: "opened"
+                ParallelAnimation {
+                    NumberAnimation { target: settingContainer; properties: "y"; duration: 250; easing.type: Easing.InOutQuad; }
+                    NumberAnimation { target: settingContainer; properties: "opacity"; duration: 250; easing.type: Easing.InOutQuad; }
+                }
+            },
+            Transition {
+                to: "closed"
+                ParallelAnimation {
+                    NumberAnimation { target: settingContainer; properties: "y"; duration: 250; easing.type: Easing.InOutQuad; }
+                    NumberAnimation { target: settingContainer; properties: "opacity"; duration: 250; easing.type: Easing.InOutQuad; }
+                }
+            }
+        ]
 
         Rectangle {
             height: 160
