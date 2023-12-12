@@ -83,6 +83,7 @@ Item {
 			if (key == CutieWlc.PowerPress && !outputPowerManager.mode) {
 				outputPowerManager.mode = true;
 				ignoreRelease = true;
+				relockTimer.start();
 			} else if (key == CutieWlc.PowerRelease && outputPowerManager.mode) {
 				outputPowerManager.mode = false;
 				lockscreen.visible = true;
@@ -93,6 +94,15 @@ Item {
 
 	OutputPowerManagerV1 {
 		id: outputPowerManager
+	}
+
+	Timer {
+		id: relockTimer
+		interval: 5000
+		onTriggered: {
+			if (lockscreen.visible) 
+				outputPowerManager.mode = false;
+		}
 	}
 
 	Lockscreen { id: lockscreen }
