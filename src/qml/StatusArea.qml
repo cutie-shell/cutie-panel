@@ -36,13 +36,15 @@ Item {
         }
     }
     
-    function modemDataChangeHandler(data) {
+    function modemDataChangeHandler() {
+        let data = CutieModemSettings.modems[0].data;
         if (!data.Online || !data.Powered) {
             image2.source = "icons/network-cellular-offline.svg"
         }
     }
 
-    function modemNetDataChangeHandler(netData) {
+    function modemNetDataChangeHandler() {
+        let netData = CutieModemSettings.modems[0].netData;
         if (netData.Status === "unregistered"
             || netData.Status === "denied") {
             image2.source = "icons/network-cellular-offline.svg"
