@@ -283,7 +283,6 @@ Item {
                 settingSheet.setSettingContainerY(-Screen.height);
                 settingSheet.containerOpacity = 0;
                 settingSheet.y = 0;
-                settingsState.height = Screen.height;
             }
         }
     }

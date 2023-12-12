@@ -1,6 +1,7 @@
 <RCC>
     <qresource prefix="/">
         <file>main.qml</file>
+        <file>Lockscreen.qml</file>
         <file>StatusArea.qml</file>
         <file>SettingSheet.qml</file>
     </qresource>

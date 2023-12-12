@@ -5,8 +5,7 @@ Item {
 	id: settingsState
 
 	width: Screen.width
-	height: 30
-	y: settingSheet.y
+	height: (lockscreen.visible || state != "closed") ? Screen.height : 30
 
 	state: "closed" 
 	states: [
@@ -65,7 +64,6 @@ Item {
 				SequentialAnimation {
 					NumberAnimation { target: setting; properties: "anchors.topMargin"; duration: 600; easing.type: Easing.InOutQuad; to: 0 }
 					NumberAnimation { target: settingSheet; properties: "y"; duration: 10; easing.type: Easing.InOutQuad; to: -Screen.height }
-					NumberAnimation { target: settingsState; properties: "height"; duration: 10; easing.type: Easing.InOutQuad; to: 30 }
 				}
 			}
 		}
@@ -85,10 +83,10 @@ Item {
 			if (key == CutieWlc.PowerPress && !outputPowerManager.mode) {
 				outputPowerManager.mode = true;
 				ignoreRelease = true;
-				console.log("on")
 			} else if (key == CutieWlc.PowerRelease && outputPowerManager.mode) {
 				outputPowerManager.mode = false;
-				console.log("off")
+				lockscreen.visible = true;
+				lockscreen.opacity = 1;
 			}
 		}
 	}
@@ -97,6 +95,7 @@ Item {
 		id: outputPowerManager
 	}
 
+	Lockscreen { id: lockscreen }
 	SettingSheet { id: settingSheet }
 	StatusArea { id: setting }
 }
