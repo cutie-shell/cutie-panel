@@ -104,7 +104,7 @@ Item {
                 wirelessActiveAccessPointHandler(null);
             }
         } else {
-            wirelessEnabledChanged(false);
+            wirelessEnabledChangedHandler(false);
         }
 
         CutieWifiSettings.activeAccessPointChanged.connect(wirelessActiveAccessPointHandler);
