@@ -10,7 +10,6 @@ Item {
     y: -Screen.height
 
     property alias containerOpacity: settingContainer.opacity
-    property alias containerY: settingContainer.y
 
     CutieStore {
         id: quickStore
@@ -42,26 +41,6 @@ Item {
         anchors.fill: parent
         opacity: settingSheet.containerOpacity
         z: 3
-    }
-
-    property bool isPoweroffPressed: false
-    property string weatherIcon: ""
-    
-    onOpacityChanged: {
-        isPoweroffPressed = false;
-    }
-
-    onIsPoweroffPressedChanged: {
-        for (let i = 0; i < settingsModel.count; i++) {
-            let btn = settingsModel.get(i)
-            if (btn.bText == "Power Off") {
-                if (isPoweroffPressed) {
-                    btn.tText = "Tap Again";
-                } else {
-                    btn.tText = "";
-                }
-            }
-        }
     }
 
     function modemDataChangeHandler(n) {
@@ -382,13 +361,6 @@ Item {
 
         ListModel {
             id: settingsModel
-
-            ListElement {
-                bText: ""
-                tText: "Power Off"
-                icon: "icons/system-shutdown-symbolic.svg"
-                clickHandler: function (self) {}
-            }
 
             ListElement {
                 bText: ""
