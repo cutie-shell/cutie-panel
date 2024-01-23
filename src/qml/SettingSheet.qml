@@ -111,6 +111,45 @@ Item {
         }
     }
 
+    function modemsChangeHandler(modems) {
+        for (let n = 0; n < modems.length; n++) {
+            let data = modems[n].data;
+            CutieModemSettings.modems[n].dataChanged.connect(modemDataChangeHandler(n));
+            CutieModemSettings.modems[n].netDataChanged.connect(modemNetDataChangeHandler(n));
+
+            if (data.Online && data.Powered) {
+                let netData = modems[n].netData;
+                let icon;
+                if (netData.Strength > 80) {
+                    icon = "icons/network-cellular-signal-excellent.svg"
+                } else if (netData.Strength > 50) {
+                    icon = "icons/network-cellular-signal-good.svg"
+                } else if (netData.Strength > 30) {
+                    icon = "icons/network-cellular-signal-ok.svg"
+                } else if (netData.Strength > 10) {
+                    icon = "icons/network-cellular-signal-low.svg"
+                } else {
+                    icon = "icons/network-cellular-signal-none.svg"
+                }
+
+                settingsModel.append({
+                    tText: qsTr("Cellular ") + (n + 1).toString(),
+                    bText: netData.Name,
+                    icon: icon
+                });
+            } else {
+                settingsModel.append({
+                    tText: qsTr("Cellular ") + (n + 1).toString(),
+                    bText: qsTr("Offline"),
+                    icon: "icons/network-cellular-offline.svg"
+                });
+
+                CutieModemSettings.modems[n].setProp("Powered", true);
+                CutieModemSettings.modems[n].setProp("Online", true);
+            } 
+        }
+    }
+
     function wirelessDataChangeHandler(wData) {
         for (let i = 0; i < settingsModel.count; i++) {
             let btn = settingsModel.get(i)
@@ -177,42 +216,8 @@ Item {
         CutieWifiSettings.wirelessEnabledChanged.connect(wirelessEnabledChangedHandler);
 
         let modems = CutieModemSettings.modems;
-        for (let n = 0; n < modems.length; n++) {
-            let data = modems[n].data;
-            CutieModemSettings.modems[n].dataChanged.connect(modemDataChangeHandler(n));
-            CutieModemSettings.modems[n].netDataChanged.connect(modemNetDataChangeHandler(n));
-
-            if (data.Online && data.Powered) {
-                let netData = modems[n].netData;
-                let icon;
-                if (netData.Strength > 80) {
-                    icon = "icons/network-cellular-signal-excellent.svg"
-                } else if (netData.Strength > 50) {
-                    icon = "icons/network-cellular-signal-good.svg"
-                } else if (netData.Strength > 30) {
-                    icon = "icons/network-cellular-signal-ok.svg"
-                } else if (netData.Strength > 10) {
-                    icon = "icons/network-cellular-signal-low.svg"
-                } else {
-                    icon = "icons/network-cellular-signal-none.svg"
-                }
-
-                settingsModel.append({
-                    tText: qsTr("Cellular ") + (n + 1).toString(),
-                    bText: netData.Name,
-                    icon: icon
-                });
-            } else {
-                settingsModel.append({
-                    tText: qsTr("Cellular ") + (n + 1).toString(),
-                    bText: qsTr("Offline"),
-                    icon: "icons/network-cellular-offline.svg"
-                });
-
-                CutieModemSettings.modems[n].setProp("Powered", true);
-                CutieModemSettings.modems[n].setProp("Online", true);
-            } 
-        }
+        modemsChangeHandler(modems);
+        CutieModemSettings.modemsChanged.connect(modemsChangeHandler);
     }
 
     function setSettingContainerY(y) {
