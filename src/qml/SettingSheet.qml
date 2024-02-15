@@ -10,6 +10,8 @@ Item {
     y: -Screen.height
 
     property alias containerOpacity: settingContainer.opacity
+    property string wifiIcon: "icons/network-wireless-offline.svg"
+    property string primaryModemIcon: "icons/network-cellular-offline.svg"
 
     CutieStore {
         id: quickStore
@@ -53,6 +55,9 @@ Item {
                         btn.bText = qsTr("Offline");
                         btn.icon = "icons/network-cellular-offline.svg"
                     }
+
+                    if (n == 0)
+                        settingSheet.primaryModemIcon = btn.icon;
                 }
             }
         }
@@ -85,6 +90,9 @@ Item {
                             btn.icon = "icons/network-cellular-signal-none.svg"
                         }
                     }
+
+                    if (n == 0)
+                        settingSheet.primaryModemIcon = btn.icon;
                 }
             }
         }
@@ -95,10 +103,10 @@ Item {
             let data = modems[n].data;
             CutieModemSettings.modems[n].dataChanged.connect(modemDataChangeHandler(n));
             CutieModemSettings.modems[n].netDataChanged.connect(modemNetDataChangeHandler(n));
+            let icon;
 
             if (data.Online && data.Powered) {
                 let netData = modems[n].netData;
-                let icon;
                 if (netData.Strength > 80) {
                     icon = "icons/network-cellular-signal-excellent.svg"
                 } else if (netData.Strength > 50) {
@@ -117,15 +125,19 @@ Item {
                     icon: icon
                 });
             } else {
+                icon = "icons/network-cellular-offline.svg";
                 settingsModel.append({
                     tText: qsTr("Cellular ") + (n + 1).toString(),
                     bText: qsTr("Offline"),
-                    icon: "icons/network-cellular-offline.svg"
+                    icon: icon
                 });
 
                 CutieModemSettings.modems[n].setProp("Powered", true);
                 CutieModemSettings.modems[n].setProp("Online", true);
-            } 
+            }
+
+            if (n == 0)
+                settingSheet.primaryModemIcon = icon;
         }
     }
 
@@ -145,6 +157,7 @@ Item {
                 } else {
                     btn.icon = "icons/network-wireless-signal-none-symbolic.svg"
                 }
+                settingSheet.wifiIcon = btn.icon;
             }
         }
     }
@@ -161,6 +174,7 @@ Item {
                     btn.bText = qsTr("Offline");
                     btn.icon = "icons/network-wireless-offline.svg";
                 }
+                settingSheet.wifiIcon = btn.icon;
             }
         }
     }
@@ -173,6 +187,7 @@ Item {
                     btn.bText = qsTr("Disabled");
                     btn.icon = "icons/network-wireless-offline.svg";
                 }
+                settingSheet.wifiIcon = btn.icon;
             }
         }
     }
