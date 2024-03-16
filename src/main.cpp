@@ -8,33 +8,35 @@
 
 int main(int argc, char *argv[])
 {
-    LayerShellQt::Shell::useLayerShell();
+	LayerShellQt::Shell::useLayerShell();
 
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-    QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
+	QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
 #endif
 
-    QCoreApplication::setOrganizationName("Cutie Community Project");
-    QCoreApplication::setApplicationName("Cutie Panel");
+	QCoreApplication::setOrganizationName("Cutie Community Project");
+	QCoreApplication::setApplicationName("Cutie Panel");
 
-    QGuiApplication app(argc, argv);
+	QGuiApplication app(argc, argv);
 
-    QQuickView view;
+	QQuickView view;
 
-    LayerShellQt::Window *layerShell = LayerShellQt::Window::get(&view);
-    layerShell->setLayer(LayerShellQt::Window::LayerOverlay);
-    layerShell->setAnchors(LayerShellQt::Window::AnchorTop);
-    layerShell->setKeyboardInteractivity(LayerShellQt::Window::KeyboardInteractivityNone);
-    layerShell->setExclusiveZone(30);
-    layerShell->setScope("cutie-panel");
+	LayerShellQt::Window *layerShell = LayerShellQt::Window::get(&view);
+	layerShell->setLayer(LayerShellQt::Window::LayerOverlay);
+	layerShell->setAnchors(LayerShellQt::Window::AnchorTop);
+	layerShell->setKeyboardInteractivity(
+		LayerShellQt::Window::KeyboardInteractivityNone);
+	layerShell->setExclusiveZone(30);
+	layerShell->setScope("cutie-panel");
 
-    QuickSettings *quicksettings = new QuickSettings(view.engine());
-    view.engine()->rootContext()->setContextProperty("quicksettings", quicksettings);
+	QuickSettings *quicksettings = new QuickSettings(view.engine());
+	view.engine()->rootContext()->setContextProperty("quicksettings",
+							 quicksettings);
 
-    view.setSource(QUrl("qrc:/main.qml"));
-    view.setColor(QColor(Qt::transparent));
+	view.setSource(QUrl("qrc:/main.qml"));
+	view.setColor(QColor(Qt::transparent));
 
-    view.show();
+	view.show();
 
-    return app.exec();
+	return app.exec();
 }
