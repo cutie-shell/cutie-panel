@@ -233,6 +233,8 @@ Item {
 
             onPressed: {
                 settingsState.state = "closing";
+                settingContainer.opacity = parent.y + 10 / Screen.height;
+                settingContainer.y = parent.y + 10 - Screen.height;
             }
 
             onReleased: {
@@ -247,8 +249,8 @@ Item {
 
             onPositionChanged: {
                 if (drag.active) {
-                    settingContainer.opacity = parent.y / Screen.height;
-                    settingContainer.y = parent.y - Screen.height
+                    settingContainer.opacity = parent.y + 10 / Screen.height;
+                    settingContainer.y = parent.y + 10 - Screen.height;
                 }
             }
         }
