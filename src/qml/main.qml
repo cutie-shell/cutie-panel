@@ -88,6 +88,7 @@ Item {
 				outputPowerManager.mode = false;
 				lockscreen.visible = true;
 				lockscreen.opacity = 1;
+				settingsState.state = "closed";
 			}
 		}
 	}
