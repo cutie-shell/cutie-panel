@@ -173,8 +173,8 @@ Item {
                 if (btn.tText == qsTr("WiFi")) {
                     btn.bText = qsTr("Offline");
                     btn.icon = "icons/network-wireless-offline.svg";
+                    settingSheet.wifiIcon = btn.icon;
                 }
-                settingSheet.wifiIcon = btn.icon;
             }
         }
     }
@@ -186,8 +186,8 @@ Item {
                 if (btn.tText == qsTr("WiFi")) {
                     btn.bText = qsTr("Disabled");
                     btn.icon = "icons/network-wireless-offline.svg";
+                    settingSheet.wifiIcon = btn.icon;
                 }
-                settingSheet.wifiIcon = btn.icon;
             }
         }
     }
