@@ -47,13 +47,34 @@ Item {
 
     function modemDataChangeHandler(n) {
         return () => {
-            let data = CutieModemSettings.modems[n].data;
+            let modem = CutieModemSettings.modems[n];
             for (let i = 0; i < settingsModel.count; i++) {
                 let btn = settingsModel.get(i)
                 if (btn.tText == "Cellular " + (n + 1).toString()) {
-                    if (!data.Online || !data.Powered) {
+                    if (!modem.online || !modem.powered) {
                         btn.bText = qsTr("Offline");
                         btn.icon = "icons/network-cellular-offline.svg"
+                        if (n == 0)
+                            settingSheet.primaryModemIcon = btn.icon;
+                    }
+                }
+            }
+        }
+    }
+
+    function modemNetStatusChangeHandler(n) {
+        return () => {
+            let netStatus = CutieModemSettings.modems[n].networkStatus;
+            for (let i = 0; i < settingsModel.count; i++) {
+                let btn = settingsModel.get(i)
+                if (btn.tText == "Cellular " + (n + 1).toString()) {
+                    if (netStatus === CutieModem.Unregistered
+                        || netStatus === CutieModem.Denied) {
+                        btn.bText = qsTr("Offline");
+                        btn.icon = "icons/network-cellular-offline.svg"
+                    } else if (netStatus === CutieModem.Searching) {
+                        btn.bText = qsTr("Searching");
+                        btn.icon = "icons/network-cellular-no-route.svg"
                     }
 
                     if (n == 0)
@@ -63,36 +84,47 @@ Item {
         }
     }
 
-    function modemNetDataChangeHandler(n) {
+    function modemNetNameChangeHandler(n) {
         return () => {
-            let netData = CutieModemSettings.modems[n].netData;
+            let netStatus = CutieModemSettings.modems[n].networkStatus;
             for (let i = 0; i < settingsModel.count; i++) {
                 let btn = settingsModel.get(i)
                 if (btn.tText == "Cellular " + (n + 1).toString()) {
-                    if (netData.Status === "unregistered"
-                        || netData.Status === "denied") {
-                        btn.bText = qsTr("Offline");
-                        btn.icon = "icons/network-cellular-offline.svg"
-                    } else if (netData.Status === "searching") {
-                        btn.bText = qsTr("Searching");
-                        btn.icon = "icons/network-cellular-no-route.svg"
-                    } else {
-                        btn.bText = netData.Name;
-                        if (netData.Strength > 80) {
+                    if (netStatus === CutieModem.Registered
+                        || netStatus === CutieModem.Roaming
+                        || netStatus === CutieModem.Unknown) {
+                        btn.bText = CutieModemSettings.modems[n].networkName;
+                    }
+                }
+            }
+        }
+    }
+
+    function modemNetStrengthChangeHandler(n) {
+        return () => {
+            let netStatus = CutieModemSettings.modems[n].networkStatus;
+            let netStrength = CutieModemSettings.modems[n].networkStrength;
+            for (let i = 0; i < settingsModel.count; i++) {
+                let btn = settingsModel.get(i)
+                if (btn.tText == "Cellular " + (n + 1).toString()) {
+                    if (netStatus === CutieModem.Registered
+                        || netStatus === CutieModem.Roaming
+                        || netStatus === CutieModem.Unknown) {     
+                        if (netStrength > 80) {
                             btn.icon = "icons/network-cellular-signal-excellent.svg"
-                        } else if (netData.Strength > 50) {
+                        } else if (netStrength > 50) {
                             btn.icon = "icons/network-cellular-signal-good.svg"
-                        } else if (netData.Strength > 30) {
+                        } else if (netStrength > 30) {
                             btn.icon = "icons/network-cellular-signal-ok.svg"
-                        } else if (netData.Strength > 10) {
+                        } else if (netStrength > 10) {
                             btn.icon = "icons/network-cellular-signal-low.svg"
                         } else {
                             btn.icon = "icons/network-cellular-signal-none.svg"
                         }
-                    }
 
-                    if (n == 0)
-                        settingSheet.primaryModemIcon = btn.icon;
+                        if (n == 0)
+                            settingSheet.primaryModemIcon = btn.icon;
+                    }
                 }
             }
         }
@@ -101,43 +133,25 @@ Item {
     function modemsChangeHandler(modems) {
         for (let n = 0; n < modems.length; n++) {
             let data = modems[n].data;
-            CutieModemSettings.modems[n].dataChanged.connect(modemDataChangeHandler(n));
-            CutieModemSettings.modems[n].netDataChanged.connect(modemNetDataChangeHandler(n));
-            let icon;
+            CutieModemSettings.modems[n].poweredChanged.connect(modemDataChangeHandler(n));
+            CutieModemSettings.modems[n].onlineChanged.connect(modemDataChangeHandler(n));
+            CutieModemSettings.modems[n].networkStatusChanged.connect(modemNetStatusChangeHandler(n));
+            CutieModemSettings.modems[n].networkNameChanged.connect(modemNetNameChangeHandler(n));
+            CutieModemSettings.modems[n].networkStrengthChanged.connect(modemNetStrengthChangeHandler(n));
 
-            if (data.Online && data.Powered) {
-                let netData = modems[n].netData;
-                if (netData.Strength > 80) {
-                    icon = "icons/network-cellular-signal-excellent.svg"
-                } else if (netData.Strength > 50) {
-                    icon = "icons/network-cellular-signal-good.svg"
-                } else if (netData.Strength > 30) {
-                    icon = "icons/network-cellular-signal-ok.svg"
-                } else if (netData.Strength > 10) {
-                    icon = "icons/network-cellular-signal-low.svg"
-                } else {
-                    icon = "icons/network-cellular-signal-none.svg"
-                }
+            CutieModemSettings.modems[n].powered = true;
+            CutieModemSettings.modems[n].online = true;
 
-                settingsModel.append({
-                    tText: qsTr("Cellular ") + (n + 1).toString(),
-                    bText: netData.Name,
-                    icon: icon
-                });
-            } else {
-                icon = "icons/network-cellular-offline.svg";
-                settingsModel.append({
-                    tText: qsTr("Cellular ") + (n + 1).toString(),
-                    bText: qsTr("Offline"),
-                    icon: icon
-                });
-
-                CutieModemSettings.modems[n].setProp("Powered", true);
-                CutieModemSettings.modems[n].setProp("Online", true);
-            }
-
-            if (n == 0)
-                settingSheet.primaryModemIcon = icon;
+            settingsModel.append({
+                tText: qsTr("Cellular ") + (n + 1).toString(),
+                bText: qsTr("Offline"),
+                icon: "icons/network-cellular-offline.svg"
+            });
+            
+            modemDataChangeHandler(n)();
+            modemNetStatusChangeHandler(n)();
+            modemNetNameChangeHandler(n)();
+            modemNetStrengthChangeHandler(n)();
         }
     }
 
