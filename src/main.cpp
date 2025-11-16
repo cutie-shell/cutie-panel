@@ -1,8 +1,8 @@
 #include <QGuiApplication>
 #include <QQuickView>
 #include <QIcon>
-#include <LayerShellQt6/shell.h>
-#include <LayerShellQt6/window.h>
+#include <LayerShellQt/shell.h>
+#include <LayerShellQt/window.h>
 
 #include "quicksettings.h"
 

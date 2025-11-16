@@ -8,7 +8,7 @@ set(CMAKE_AUTOMOC ON)
 include( GNUInstallDirs )
 
 find_package(Qt6 REQUIRED COMPONENTS Core Gui Quick Network Qml DBus)
-find_package(LayerShellQt6 REQUIRED)
+find_package(LayerShellQt REQUIRED)
 find_package(Libudev)
 
 set(cutie-shell_SOURCES 
@@ -25,6 +25,6 @@ qt_add_executable(cutie-panel ${cutie-shell_SOURCES} ${APP_RESOURCES})
 
 target_include_directories(cutie-panel PUBLIC src)
 
-target_link_libraries(cutie-panel PUBLIC LayerShellQtInterface6 PkgConfig::Libudev Qt::Core Qt::Gui Qt::GuiPrivate Qt::DBus Qt::Quick Qt::Network Qt::Qml)
+target_link_libraries(cutie-panel PUBLIC LayerShellQtInterface PkgConfig::Libudev Qt::Core Qt::Gui Qt::GuiPrivate Qt::DBus Qt::Quick Qt::Network Qt::Qml)
 
 install(TARGETS cutie-panel RUNTIME DESTINATION "${CMAKE_INSTALL_BINDIR}")
